@@ -1,0 +1,64 @@
+def input_mahasiswa():
+    mahasiswa = []
+    jumlah = int(input("Masukkan jumlah mahasiswa: "))
+    
+    i = 0
+    while i < jumlah :
+        nama = input("Nama: ")
+        nim = input("NIM: ")
+        uts = float(input("Nilai UTS: "))
+        uas = float(input("Nilai UAS: "))
+        tugas = float(input("Nilai Tugas: "))
+        mahasiswa.append([nama, nim, uts, uas, tugas])
+        i += 1
+    return mahasiswa
+    
+def rata_rata_nilai(mahasiswa, index):
+    total = 0
+    for data_mahasiswa in mahasiswa:
+        total += data_mahasiswa[index]
+    return total / len(mahasiswa)
+
+def hitung_nilai_akhir(mahasiswa):
+    nilai_akhir = []
+    for data_mahasiswa in mahasiswa:
+        akhir = 0.35 * data_mahasiswa[2] + 0.35 * data_mahasiswa[3] + 0.30 * data_mahasiswa[4]
+        nilai_akhir.append(data_mahasiswa + [akhir])  
+    return nilai_akhir
+
+def peringkat_mahasiswa(nilai_akhir):
+    mahasiswa_ranking = []
+    mahasiswa_tertinggi = None
+     
+    while nilai_akhir:  
+        nilai_max = nilai_akhir[0]  
+        for data_mahasiswa in nilai_akhir:
+            if data_mahasiswa[5] > nilai_max[5]: 
+                nilai_max = data_mahasiswa
+        
+        mahasiswa_ranking.append(nilai_max + [len(mahasiswa_ranking) + 1])  
+        nilai_akhir.remove(nilai_max) 
+
+        if mahasiswa_tertinggi is None or nilai_max[5] > mahasiswa_tertinggi[5]: 
+            mahasiswa_tertinggi = nilai_max
+    return mahasiswa_ranking, mahasiswa_tertinggi
+
+def tampilkan_tabel(mahasiswa_ranking, mahasiswa_tertinggi):
+    rata_uts = rata_rata_nilai(mahasiswa_ranking, 2)
+    rata_uas = rata_rata_nilai(mahasiswa_ranking, 3)
+    rata_tugas = rata_rata_nilai(mahasiswa_ranking, 4)
+    rata_akhir = rata_rata_nilai(mahasiswa_ranking, 5)
+    
+    print("--------------------------------------------------------------------")
+    print("| Nama      | NIM  | UTS  | UAS  | Tugas | Nilai Akhir | Peringkat |")
+    print("|-----------|------|------|------|-------|-------------|-----------|")
+    for data_mahasiswa in mahasiswa_ranking:
+        print(f"| {data_mahasiswa[0]:<9} | {data_mahasiswa[1]:<4} | {data_mahasiswa[2]:<4} | {data_mahasiswa[3]:<4} | {data_mahasiswa[4]:<5} | {data_mahasiswa[5]:<11.2f} | {data_mahasiswa[6]:<9} |")
+    
+    print("| Rata-rata | --   | {:.2f}| {:.2f}| {:.2f} | {:.2f}       | --        |".format(rata_uts, rata_uas, rata_tugas, rata_akhir))
+    print("--------------------------------------------------------------------")
+    
+mahasiswa = input_mahasiswa()
+nilai_akhir = hitung_nilai_akhir(mahasiswa)
+mahasiswa_ranking, mahasiswa_tertinggi = peringkat_mahasiswa(nilai_akhir)
+tampilkan_tabel(mahasiswa_ranking, mahasiswa_tertinggi)
